@@ -248,43 +248,44 @@ export default function Home() {
 
 
   return (
-    // NEW: Dark gradient background
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-gray-200">
-      <div className="container mx-auto px-4 py-8">
-        
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50">
+      <div className="container mx-auto px-4 py-12">
+
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Container className="h-8 w-8 text-cyan-400" />
-            <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div className="p-2 bg-gradient-to-br from-blue-500 to-emerald-500 rounded-xl shadow-lg">
+              <Container className="h-7 w-7 text-white" />
+            </div>
+            <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-teal-600 to-emerald-600">
               DockGen AI
             </h1>
           </div>
-          <p className="text-lg text-gray-400">
+          <p className="text-xl text-slate-600 font-medium">
             AI-Powered Dockerfile Generator & Image Builder
           </p>
         </div>
 
         {/* Two-column grid layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          
+
           {/* --- LEFT COLUMN (Controls & Status) --- */}
           <div className="lg:col-span-1 space-y-6">
-            
-            {/* NEW: "Glassmorphism" Input Panel */}
-            <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg">
-              <div className="p-6">
-                <h3 className="text-2xl font-semibold flex items-center gap-2 text-white">
-                  <Github className="h-5 w-5" />
+
+            {/* Input Panel */}
+            <div className="bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50">
+              <div className="p-7">
+                <h3 className="text-2xl font-bold flex items-center gap-2 text-slate-800">
+                  <Github className="h-6 w-6 text-blue-600" />
                   GitHub Repository
                 </h3>
-                <p className="text-gray-400 mt-2">
+                <p className="text-slate-500 mt-2 text-sm leading-relaxed">
                   Enter your repo URL and a Personal Access Token
                 </p>
               </div>
-              <div className="p-6 border-t border-gray-700 space-y-4">
+              <div className="p-7 border-t border-slate-200 space-y-5">
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-300">
+                  <label className="block text-sm font-semibold mb-2 text-slate-700">
                     GitHub Repository URL
                   </label>
                   <Input
@@ -293,11 +294,11 @@ export default function Home() {
                     value={githubUrl}
                     onChange={(e) => setGithubUrl(e.target.value)}
                     disabled={isGenerating}
-                    className="bg-gray-900 border-gray-700 text-white placeholder-gray-500 focus:ring-cyan-500 focus:border-cyan-500"
+                    className="bg-white border-slate-300 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-xl h-11"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2 text-gray-300">
+                  <label className="block text-sm font-semibold mb-2 text-slate-700">
                     Personal Access Token
                   </label>
                   <Input
@@ -306,32 +307,32 @@ export default function Home() {
                     value={githubToken}
                     onChange={(e) => setGithubToken(e.target.value)}
                     disabled={isGenerating}
-                    className="bg-gray-900 border-gray-700 text-white placeholder-gray-500 focus:ring-cyan-500 focus:border-cyan-500"
+                    className="bg-white border-slate-300 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-xl h-11"
                   />
                 </div>
-                <div className="space-y-2 pt-2">
-                  <Button 
-                    onClick={handleGenerate} 
+                <div className="space-y-3 pt-2">
+                  <Button
+                    onClick={handleGenerate}
                     disabled={isGenerating || !githubUrl || !githubToken}
-                    className="w-full text-lg font-bold bg-cyan-500 text-black hover:bg-cyan-600 shadow-lg shadow-cyan-500/20"
+                    className="w-full h-12 text-base font-bold bg-gradient-to-r from-blue-600 to-emerald-600 text-white hover:from-blue-700 hover:to-emerald-700 shadow-lg shadow-blue-500/30 rounded-xl transition-all duration-200"
                   >
                     {isGenerating ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                         Generating...
                       </>
                     ) : (
                       <>
-                        <Container className="mr-2 h-4 w-4" />
-                        Generate 
+                        <Container className="mr-2 h-5 w-5" />
+                        Generate
                       </>
                     )}
                   </Button>
                   {isGenerating && (
-                    <Button 
+                    <Button
                       onClick={handleStopGeneration}
                       variant="destructive"
-                      className="w-full"
+                      className="w-full h-10 rounded-xl"
                       size="sm"
                     >
                       Stop  Generation
@@ -343,7 +344,7 @@ export default function Home() {
 
             {/* Error Alert */}
             {error && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="rounded-xl border-red-200 bg-red-50">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
@@ -352,14 +353,16 @@ export default function Home() {
 
           {/* --- RIGHT COLUMN (Results & Status) --- */}
           <div className="lg:col-span-2 space-y-6">
-            
+
             {/* 1. Loading State */}
             {isGenerating && !result && (
-              <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg flex flex-col items-center justify-center min-h-[400px]">
-                <div className="text-center p-6">
-                  <Loader2 className="h-12 w-12 text-cyan-400 animate-spin mb-4" />
-                  <h3 className="text-xl font-semibold text-white">Analyzing Repository...</h3>
-                  <p className="text-gray-400 mt-2">
+              <div className="bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50 flex flex-col items-center justify-center min-h-[450px]">
+                <div className="text-center p-8">
+                  <div className="inline-flex p-4 bg-gradient-to-br from-blue-100 to-emerald-100 rounded-full mb-5">
+                    <Loader2 className="h-14 w-14 text-blue-600 animate-spin" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-800 mb-2">Analyzing Repository...</h3>
+                  <p className="text-slate-500 text-base">
                     Cloning repo and detecting tech stack...
                   </p>
                 </div>
@@ -369,20 +372,20 @@ export default function Home() {
             {/* 2. Results State */}
             {result && (
               <div className="space-y-6">
-                
+
                 {/* Tech Stack Panel */}
                 {result.techStack.length > 0 && (
-                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg">
-                    <div className="p-6">
-                      <h3 className="text-xl font-semibold flex items-center gap-2 text-white">
-                        <CheckCircle className="h-5 w-5 text-green-400" />
+                  <div className="bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50">
+                    <div className="p-7">
+                      <h3 className="text-2xl font-bold flex items-center gap-2 text-slate-800">
+                        <CheckCircle className="h-6 w-6 text-emerald-600" />
                          Tech Stack
                       </h3>
                     </div>
-                    <div className="p-6 border-t border-gray-700">
-                      <div className="flex flex-wrap gap-2">
+                    <div className="p-7 border-t border-slate-200">
+                      <div className="flex flex-wrap gap-3">
                         {result.techStack.map((tech) => (
-                          <Badge key={tech} className="bg-cyan-900 text-cyan-200 text-sm px-3 py-1">
+                          <Badge key={tech} className="bg-gradient-to-r from-blue-100 to-emerald-100 text-blue-800 border border-blue-200 text-sm px-4 py-2 rounded-lg font-semibold shadow-sm">
                             {tech}
                           </Badge>
                         ))}
@@ -393,44 +396,44 @@ export default function Home() {
 
                 {/* Generated Dockerfile Panel */}
                 {result.dockerfile && (
-                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg">
-                    <div className="p-6">
-                      <h3 className="text-xl font-semibold text-white">Generated Dockerfile</h3>
-                      <p className="text-gray-400 mt-1">
+                  <div className="bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-xl shadow-slate-200/50">
+                    <div className="p-7">
+                      <h3 className="text-2xl font-bold text-slate-800">Generated Dockerfile</h3>
+                      <p className="text-slate-500 mt-2 text-sm">
                         AI-generated Dockerfile optimized for your project
                       </p>
                     </div>
-                    <div className="p-6 border-t border-gray-700">
+                    <div className="p-7 border-t border-slate-200">
                       <Textarea
                         value={result.dockerfile}
                         readOnly
-                        className="min-h-[300px] font-mono text-sm bg-gray-900/70 border border-gray-700 rounded-md text-gray-200 p-4 focus:ring-cyan-500 focus:border-cyan-500"
+                        className="min-h-[350px] font-mono text-sm bg-slate-50 border-2 border-slate-300 rounded-xl text-slate-800 p-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       />
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        <Button 
-                          variant="outline" 
+                      <div className="mt-5 flex flex-wrap gap-3">
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => copyToClipboard(result.dockerfile)}
-                          className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                          className="border-2 border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-xl h-10 font-semibold"
                         >
                           <Copy className="mr-2 h-4 w-4" />
                           Copy to Clipboard
                         </Button>
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={downloadDockerfile}
-                          className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                          className="border-2 border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 rounded-xl h-10 font-semibold"
                         >
                           <Download className="mr-2 h-4 w-4" />
                           Download Dockerfile
                         </Button>
-                        <Button 
-                          variant="default" 
+                        <Button
+                          variant="default"
                           size="sm"
                           onClick={pushDockerfileToRepository}
                           disabled={isPushing || !generationId}
-                          className="bg-cyan-500 text-black font-semibold hover:bg-cyan-600 shadow-lg shadow-cyan-500/20"
+                          className="bg-gradient-to-r from-blue-600 to-emerald-600 text-white font-bold hover:from-blue-700 hover:to-emerald-700 shadow-lg shadow-blue-500/30 rounded-xl h-10"
                         >
                           {isPushing ? (
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -441,8 +444,8 @@ export default function Home() {
                         </Button>
                       </div>
                       {pushSuccess && (
-                        <div className="mt-3 text-sm text-green-400 flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4" />
+                        <div className="mt-4 px-4 py-3 bg-emerald-50 border border-emerald-200 rounded-xl text-sm text-emerald-700 flex items-center gap-2 font-semibold">
+                          <CheckCircle className="h-5 w-5" />
                           Dockerfile successfully pushed to repository!
                         </div>
                       )}
@@ -454,11 +457,13 @@ export default function Home() {
 
             {/* 3. Empty State */}
             {!isGenerating && !result && !error && (
-               <div className="bg-gray-800/50 backdrop-blur-sm border border-dashed border-gray-700 rounded-lg shadow-lg flex flex-col items-center justify-center min-h-[400px]">
-                <div className="text-center p-6">
-                  <Container className="h-12 w-12 text-gray-600 mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-400">Waiting for Repository</h3>
-                  <p className="text-gray-500 mt-2">
+               <div className="bg-white/60 backdrop-blur-md border-2 border-dashed border-slate-300 rounded-2xl shadow-lg flex flex-col items-center justify-center min-h-[450px]">
+                <div className="text-center p-8">
+                  <div className="inline-flex p-4 bg-slate-100 rounded-full mb-5">
+                    <Container className="h-14 w-14 text-slate-400" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-600 mb-2">Waiting for Repository</h3>
+                  <p className="text-slate-500 text-base">
                     Enter your GitHub details on the left to start.
                   </p>
                 </div>
