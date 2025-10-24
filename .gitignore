@@ -48,3 +48,4 @@ backend/.env
 # frontend
 frontend/.next/
 frontend/.env.local
+.env
