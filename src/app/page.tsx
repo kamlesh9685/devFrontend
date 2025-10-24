@@ -1,8 +1,11 @@
+
+
 "use client";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+// We no longer use Card components, but keep the imports for other UI elements
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -29,14 +32,12 @@ export default function Home() {
   const [pushSuccess, setPushSuccess] = useState(false);
   const [pollTimeout, setPollTimeout] = useState<NodeJS.Timeout | null>(null);
   const [isStopping, setIsStopping] = useState(false);
-
   const handleGenerate = async () => {
     if (!githubUrl || !githubToken) {
       setError("Please provide both GitHub URL and Personal Access Token");
       return;
     }
 
-    // Clear any existing polling
     if (pollTimeout) {
       clearTimeout(pollTimeout);
       setPollTimeout(null);
@@ -48,15 +49,6 @@ export default function Home() {
     setResult(null);
 
     try {
-      // Check if backend is running
-      // const isHealthy = await apiClient.checkHealth();
-      // if (!isHealthy) {
-      //   setError("Backend server is not running. Please start the backend server on http://localhost:3001");
-      //   setIsGenerating(false);
-      //   return;
-      // }
-
-      // Start the generation process
       const response = await apiClient.generateDockerfile({
         githubUrl,
         githubToken
@@ -114,7 +106,7 @@ export default function Home() {
           // Stop immediately when Dockerfile is generated (success) or on error
           const hasDockerfile = !!generation.dockerfile;
           const hasCompleteResult = (generation.buildStatus === 'success') || 
-                                   (generation.buildStatus === 'error' && generation.error);
+                                    (generation.buildStatus === 'error' && generation.error);
           
           // Stop as soon as we have a Dockerfile or complete result
           const shouldStopOnDockerfile = hasDockerfile || hasCompleteResult;
@@ -256,179 +248,223 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+    // NEW: Dark gradient background
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-gray-200">
       <div className="container mx-auto px-4 py-8">
+        
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Container className="h-8 w-8 text-blue-600" />
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+            <Container className="h-8 w-8 text-cyan-400" />
+            <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
               DockGen AI
             </h1>
           </div>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
+          <p className="text-lg text-gray-400">
             AI-Powered Dockerfile Generator & Image Builder
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          {/* Input Form */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Github className="h-5 w-5" />
-                GitHub Repository
-              </CardTitle>
-              <CardDescription>
-                Enter your GitHub repository URL and Personal Access Token to generate a Dockerfile
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  GitHub Repository URL
-                </label>
-                <Input
-                  type="url"
-                  placeholder="https://github.com/username/repository"
-                  value={githubUrl}
-                  onChange={(e) => setGithubUrl(e.target.value)}
-                  disabled={isGenerating}
-                />
+        {/* Two-column grid layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          
+          {/* --- LEFT COLUMN (Controls & Status) --- */}
+          <div className="lg:col-span-1 space-y-6">
+            
+            {/* NEW: "Glassmorphism" Input Panel */}
+            <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg">
+              <div className="p-6">
+                <h3 className="text-2xl font-semibold flex items-center gap-2 text-white">
+                  <Github className="h-5 w-5" />
+                  GitHub Repository
+                </h3>
+                <p className="text-gray-400 mt-2">
+                  Enter your repo URL and a Personal Access Token
+                </p>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Personal Access Token
-                </label>
-                <Input
-                  type="password"
-                  placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-                  value={githubToken}
-                  onChange={(e) => setGithubToken(e.target.value)}
-                  disabled={isGenerating}
-                />
-              </div>
-              <div className="space-y-2">
-                <Button 
-                  onClick={handleGenerate} 
-                  disabled={isGenerating || !githubUrl || !githubToken}
-                  className="w-full"
-                  size="lg"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating Dockerfile...
-                    </>
-                  ) : (
-                    <>
-                      <Container className="mr-2 h-4 w-4" />
-                      Generate Dockerfile
-                    </>
-                  )}
-                </Button>
-                {isGenerating && (
+              <div className="p-6 border-t border-gray-700 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-300">
+                    GitHub Repository URL
+                  </label>
+                  <Input
+                    type="url"
+                    placeholder="https://github.com/username/repository"
+                    value={githubUrl}
+                    onChange={(e) => setGithubUrl(e.target.value)}
+                    disabled={isGenerating}
+                    className="bg-gray-900 border-gray-700 text-white placeholder-gray-500 focus:ring-cyan-500 focus:border-cyan-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2 text-gray-300">
+                    Personal Access Token
+                  </label>
+                  <Input
+                    type="password"
+                    placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                    value={githubToken}
+                    onChange={(e) => setGithubToken(e.target.value)}
+                    disabled={isGenerating}
+                    className="bg-gray-900 border-gray-700 text-white placeholder-gray-500 focus:ring-cyan-500 focus:border-cyan-500"
+                  />
+                </div>
+                <div className="space-y-2 pt-2">
                   <Button 
-                    onClick={handleStopGeneration}
-                    variant="destructive"
-                    className="w-full"
-                    size="sm"
+                    onClick={handleGenerate} 
+                    disabled={isGenerating || !githubUrl || !githubToken}
+                    className="w-full text-lg font-bold bg-cyan-500 text-black hover:bg-cyan-600 shadow-lg shadow-cyan-500/20"
                   >
-                    Stop Dockerfile Generation
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Generating...
+                      </>
+                    ) : (
+                      <>
+                        <Container className="mr-2 h-4 w-4" />
+                        Generate 
+                      </>
+                    )}
                   </Button>
+                  {isGenerating && (
+                    <Button 
+                      onClick={handleStopGeneration}
+                      variant="destructive"
+                      className="w-full"
+                      size="sm"
+                    >
+                      Stop  Generation
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Error Alert */}
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+          </div>
+
+          {/* --- RIGHT COLUMN (Results & Status) --- */}
+          <div className="lg:col-span-2 space-y-6">
+            
+            {/* 1. Loading State */}
+            {isGenerating && !result && (
+              <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg flex flex-col items-center justify-center min-h-[400px]">
+                <div className="text-center p-6">
+                  <Loader2 className="h-12 w-12 text-cyan-400 animate-spin mb-4" />
+                  <h3 className="text-xl font-semibold text-white">Analyzing Repository...</h3>
+                  <p className="text-gray-400 mt-2">
+                    Cloning repo and detecting tech stack...
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* 2. Results State */}
+            {result && (
+              <div className="space-y-6">
+                
+                {/* Tech Stack Panel */}
+                {result.techStack.length > 0 && (
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg">
+                    <div className="p-6">
+                      <h3 className="text-xl font-semibold flex items-center gap-2 text-white">
+                        <CheckCircle className="h-5 w-5 text-green-400" />
+                         Tech Stack
+                      </h3>
+                    </div>
+                    <div className="p-6 border-t border-gray-700">
+                      <div className="flex flex-wrap gap-2">
+                        {result.techStack.map((tech) => (
+                          <Badge key={tech} className="bg-cyan-900 text-cyan-200 text-sm px-3 py-1">
+                            {tech}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Generated Dockerfile Panel */}
+                {result.dockerfile && (
+                  <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg shadow-lg">
+                    <div className="p-6">
+                      <h3 className="text-xl font-semibold text-white">Generated Dockerfile</h3>
+                      <p className="text-gray-400 mt-1">
+                        AI-generated Dockerfile optimized for your project
+                      </p>
+                    </div>
+                    <div className="p-6 border-t border-gray-700">
+                      <Textarea
+                        value={result.dockerfile}
+                        readOnly
+                        className="min-h-[300px] font-mono text-sm bg-gray-900/70 border border-gray-700 rounded-md text-gray-200 p-4 focus:ring-cyan-500 focus:border-cyan-500"
+                      />
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => copyToClipboard(result.dockerfile)}
+                          className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                        >
+                          <Copy className="mr-2 h-4 w-4" />
+                          Copy to Clipboard
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={downloadDockerfile}
+                          className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Download Dockerfile
+                        </Button>
+                        <Button 
+                          variant="default" 
+                          size="sm"
+                          onClick={pushDockerfileToRepository}
+                          disabled={isPushing || !generationId}
+                          className="bg-cyan-500 text-black font-semibold hover:bg-cyan-600 shadow-lg shadow-cyan-500/20"
+                        >
+                          {isPushing ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <GitCommit className="mr-2 h-4 w-4" />
+                          )}
+                          {isPushing ? 'Pushing...' : 'Push to Repository'}
+                        </Button>
+                      </div>
+                      {pushSuccess && (
+                        <div className="mt-3 text-sm text-green-400 flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4" />
+                          Dockerfile successfully pushed to repository!
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            )}
 
-
-
-          {/* Error Alert */}
-          {error && (
-            <Alert className="mb-8" variant="destructive">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-
-          {/* Results */}
-          {result && (
-            <div className="space-y-6">
-              {/* Tech Stack Detection */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                    Detected Tech Stack
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {result.techStack.map((tech) => (
-                      <Badge key={tech} variant="secondary">
-                        {tech}
-                      </Badge>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Generated Dockerfile */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Generated Dockerfile</CardTitle>
-                  <CardDescription>
-                    AI-generated Dockerfile optimized for your project
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Textarea
-                    value={result.dockerfile}
-                    readOnly
-                    className="min-h-[300px] font-mono text-sm"
-                  />
-                  <div className="mt-4 flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => copyToClipboard(result.dockerfile)}
-                    >
-                      <Copy className="mr-2 h-4 w-4" />
-                      Copy to Clipboard
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={downloadDockerfile}
-                    >
-                      <Download className="mr-2 h-4 w-4" />
-                      Download Dockerfile
-                    </Button>
-                    <Button 
-                      variant="default" 
-                      size="sm"
-                      onClick={pushDockerfileToRepository}
-                      disabled={isPushing || !generationId}
-                    >
-                      {isPushing ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <GitCommit className="mr-2 h-4 w-4" />
-                      )}
-                      {isPushing ? 'Pushing...' : 'Push to Repository'}
-                    </Button>
-                  </div>
-                  {pushSuccess && (
-                    <div className="mt-2 text-sm text-green-600">
-                      ✅ Dockerfile successfully pushed to repository!
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-
-            </div>
-          )}
+            {/* 3. Empty State */}
+            {!isGenerating && !result && !error && (
+               <div className="bg-gray-800/50 backdrop-blur-sm border border-dashed border-gray-700 rounded-lg shadow-lg flex flex-col items-center justify-center min-h-[400px]">
+                <div className="text-center p-6">
+                  <Container className="h-12 w-12 text-gray-600 mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-400">Waiting for Repository</h3>
+                  <p className="text-gray-500 mt-2">
+                    Enter your GitHub details on the left to start.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
